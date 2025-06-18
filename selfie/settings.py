@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-aek&zg@#-m#2)f1qk&lvz!f+7qx63j5clef9%m_%t$3-+3&9j1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS =  ['.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
+
 
 
 # Application definition
@@ -40,9 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "selfie_app",
 ]
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'secret')
-ALLOWED_HOSTS = ['*']
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'secret')
 ALLOWED_HOSTS = ['*']
